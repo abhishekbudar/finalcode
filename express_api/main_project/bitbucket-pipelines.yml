@@ -1,0 +1,18 @@
+image: atlassian/default-image:latest
+
+pipelines:
+  default:
+    - step:
+        name: Deploy to EKS
+        script:
+          - apt-get update && apt-get install -y awscli
+          - curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.0/2023-08-04/bin/linux/amd64/kubectl
+          - chmod +x kubectl
+          - mv kubectl /usr/local/bin/
+          - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+
+          - kubectl get nodes
+
+          
+          - kubectl apply -f k8s/deployment.yaml
+          - kubectl apply -f k8s/service.yaml

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gin-api
+  labels:
+    app: gin-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gin-api
+  template:
+    metadata:
+      labels:
+        app: gin-api
+    spec:
+      containers:
+      - name: gin-api
+        image: <docker-image-url>:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: CONFIG_FILE
+          value: "/config/conf.json"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: gin-api-config
